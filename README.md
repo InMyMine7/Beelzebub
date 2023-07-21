@@ -1,7 +1,7 @@
 # _Beelzebub_
 Beelzebub Shell Scanner v1.0
 
-<img src="https://raw.githubusercontent.com/InMyMine7/Beelzebub/main/bel.jpg">
+<img src="https://raw.githubusercontent.com/InMyMine7/Beelzebub/main/beelzebub.jpg">
 
 Logs :
 - v1.0 - initial release
