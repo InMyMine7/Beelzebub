@@ -1,3 +1,5 @@
 colorama
 requests
-
+datetime
+ctypes
+multiprocessing
