@@ -1,10 +1,7 @@
 # _Beelzebub_
-Beelzebub Shell Scanner v1.0
+Beelzebub Shell Scanner
 
 <img src="https://raw.githubusercontent.com/InMyMine7/Beelzebub/main/beelzebub.jpg">
-
-Logs :
-- v1.0 - initial release
 
 Feature : 
 - Fast Scanning
