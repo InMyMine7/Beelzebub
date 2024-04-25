@@ -1,4 +1,4 @@
-# _Beelzebub_
+# _Beelzebub v1.3 soon_
 Beelzebub Shell Scanner
 
 <img src="https://raw.githubusercontent.com/InMyMine7/Beelzebub/main/beel.png">
