@@ -1,7 +1,7 @@
 # _Beelzebub_
 Beelzebub Shell Scanner
 
-<img src="https://raw.githubusercontent.com/InMyMine7/Beelzebub/main/Bellze.png">
+<img src="https://raw.githubusercontent.com/InMyMine7/Beelzebub/main/beel.png">
 
 Feature : 
 - Fast Scanning
