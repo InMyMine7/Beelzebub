@@ -1,13 +1,16 @@
-# _Beelzebub v1.3 soon_
+# _Beelzebub v1.3_
 Beelzebub Shell Scanner
 
-<img src="https://raw.githubusercontent.com/InMyMine7/Beelzebub/main/beel.png">
+<img src="https://github.com/InMyMine7/InMyMine7/blob/main/1.3.png">
 
 Feature : 
 - Fast Scanning
 - Multithread
 - Support http/https
 - Safe for use no backdor or etc
+- zone h grabber
+- domain cleaner
+- reverse ip
 
 Requirement :
 
