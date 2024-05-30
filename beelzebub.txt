@@ -3,3 +3,6 @@ requests
 datetime
 ctypes
 multiprocessing
+cloudscraper
+pytz
+tldextract
