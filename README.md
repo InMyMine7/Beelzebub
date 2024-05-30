@@ -8,7 +8,7 @@ Feature :
 - Multithread
 - Support http/https
 - Safe for use no backdor or etc
-- zone h grabber
+- zone h grabber (change ppshid in zoneh.json)
 - domain cleaner
 - reverse ip
 
