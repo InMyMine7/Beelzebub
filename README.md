@@ -16,7 +16,7 @@ Feature :
 
 Note :
 - `Don't delete allsmtp.txt or smtp_random.txt in folder scan`
-- `add shell path in scan/priv.txt`
+- `u can add shell path in folder scan/priv.txt`
 - `change ppshid and zhe for zone h grabber in jonh.json`
 - `if zone h stuck or not work u can use vpn, maybe u ip got banned from zone h`
 
