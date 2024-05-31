@@ -8,7 +8,7 @@ Feature :
 - Multithread
 - Support http/https
 - Safe for use no backdor or etc
-- zone h grabber (change ppshid in zoneh.json)
+- zone h grabber
 - domain cleaner
 - reverse ip
 - smtp finder
@@ -16,6 +16,9 @@ Feature :
 
 Note :
 - `Don't delete allsmtp.txt or smtp_random.txt in folder scan`
+- `add shell path in scan/priv.txt`
+- `change ppshid and zhe for zone h grabber in jonh.json`
+- `if zone h stuck or not work u can use vpn, maybe u ip got banned from zone h`
 
 Requirement :
 
