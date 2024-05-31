@@ -1,7 +1,7 @@
-# _Beelzebub v1.3_
-Beelzebub Shell Scanner
+# _Beelzebub v1.4_
+Beelzebub Priv8 Tools
 
-<img src="https://github.com/InMyMine7/InMyMine7/blob/main/1.3.png">
+<img src="https://raw.githubusercontent.com/InMyMine7/InMyMine7/main/1.4.png">
 
 Feature : 
 - Fast Scanning
@@ -11,6 +11,11 @@ Feature :
 - zone h grabber (change ppshid in zoneh.json)
 - domain cleaner
 - reverse ip
+- smtp finder
+- wp bruteforce
+
+Note :
+- `Don't delete allsmtp.txt or smtp_random.txt in folder scan`
 
 Requirement :
 
