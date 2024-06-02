@@ -34,7 +34,7 @@ pip install -r beelzebub.txt
 How To Usage :
 
 ```
-python beelzebub.py
+python3 beelzebub.py
 ```
 
 **DISCLAIMER : THIS TOOLS IS FOR EDUCATIONAL PURPOSES ONLY. 
