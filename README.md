@@ -1,41 +1,37 @@
-# _Beelzebub v1.4_
-Beelzebub Priv8 Tools
+## Beelzebub v1.5
 
-<img src="https://raw.githubusercontent.com/InMyMine7/InMyMine7/main/1.4.png">
+<img src="https://github.com/InMyMine7/InMyMine7/blob/main/1.5.png">
 
-Feature : 
-- Fast Scanning
-- Multithread
+Beelzebub all in one tools, Shell finder, Zone-H Grabber, ReverseIP, SMTP Finder, XMLRPC BF and more
+
+## NOTE !!!!!
+- u can add shell path in folder scan/shell-path.txt
+- add env path in scan/env-path.txt
+- add password for bruteforce wp in scan/password-bruteforce.txt
+- add path for search wp install and setup in scan/wp-install-path.txt
+- change ppshid and zhe for zone h grabber in scan/jonh.json
+- if zone h stuck or not work u can use vpn, maybe u ip got banned from zone h
+
+## Requirements
+- Python 3.x
+- The requests package (`pip3 install -r requirements.txt`)
+
+## Key Features
 - Support http/https
-- Safe for use no backdor or etc
-- zone h grabber
-- domain cleaner
-- reverse ip
-- smtp finder
-- wp bruteforce
+- Auto search username wordpress. 
+- With module threading to make fastest to run
+- Support http/https in ur list.
 
-Note :
-- `Don't delete allsmtp.txt or smtp_random.txt in folder Result`
-- `u can add shell path in folder scan/priv.txt`
-- `change ppshid and zhe for zone h grabber in jonh.json`
-- `if zone h stuck or not work u can use vpn, maybe u ip got banned from zone h`
-
-Requirement :
-
-- `Python 3.11.4`
-
-- `pip 23.1.2`
-
-Install :
-
-```
-pip install -r beelzebub.txt
-```
-How To Usage :
+## Password Features For xmlrpcbf
+- [WPLOGIN] = username wordpress
+- [UPPERLOGIN] = username with capslock example ADMIN
+- [DOMAIN] = domain.com
+- [UPPERDOMAIN] = domain with capslock example DOMAIN.COM
+- [FULLDOMAIN] = https://domain.com
+## How To Usage 
 
 ```
 python3 beelzebub.py
 ```
-
-**DISCLAIMER : THIS TOOLS IS FOR EDUCATIONAL PURPOSES ONLY. 
-AND WE DO NOT CONDONE ANY ILLEGAL ACTIVITIES**
+## DISCLAIMER
+This script should only be used for educational purposes and ethical hacking. Unauthorized access to computer systems is illegal and unethical. Ensure you have explicit permission before testing any system. AND WE DO NOT CONDONE ANY ILLEGAL ACTIVITIES
