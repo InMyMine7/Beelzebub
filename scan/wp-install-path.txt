@@ -1,0 +1,8 @@
+/wp-admin/setup-config.php
+/blog/wp-admin/setup-config.php
+/wp/wp-admin/setup-config.php
+/wordpress/wp-admin/setup-config.php
+/wp-admin/install.php
+/blog/wp-admin/install.php
+/wp/wp-admin/install.php
+/wordpress/wp-admin/install.php
