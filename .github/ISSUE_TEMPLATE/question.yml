@@ -1,0 +1,38 @@
+name: ❓ Question
+description: Ask a question about Beelzebub
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in Beelzebub! Please check the existing issues and documentation before submitting a question.
+        
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know about Beelzebub?
+      placeholder: How do I...?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Add any context that might help us better answer your question
+      placeholder: |
+        - Beelzebub version: [e.g. v1.6]
+        - OS: [e.g. Windows]
+        - Python version: [e.g. 3.12]
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      description: Before submitting, please confirm
+      options:
+        - label: I have searched existing issues and documentation
+          required: true
+        - label: This is a question and not a bug report or feature request
+          required: true

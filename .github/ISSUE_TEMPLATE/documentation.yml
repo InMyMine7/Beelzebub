@@ -1,0 +1,47 @@
+name: 📝 Documentation
+description: Report issues with or suggest improvements to documentation
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping us improve our documentation!
+        
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type of Documentation Issue
+      description: What type of documentation issue is this?
+      options:
+        - Error in existing documentation
+        - Missing documentation
+        - Unclear documentation
+        - Improvement suggestion
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: Where is the documentation issue? (URL or file path)
+      placeholder: README.md, lib/tools/...
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the issue or suggested improvement
+      placeholder: The documentation should...
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Changes
+      description: If you have specific wording suggestions, include them here
+      placeholder: Change "..." to "..."
