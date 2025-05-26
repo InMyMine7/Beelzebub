@@ -1,0 +1,11 @@
+requests>=2.31.0
+httpx>=0.25.0
+cloudscraper>=1.2.71
+asyncio>=3.4.3
+aiohttp>=3.9.1
+beautifulsoup4>=4.12.2
+colorama>=0.4.6
+tldextract>=5.1.1
+urllib3>=2.1.0
+paramiko>=3.3.1  
+smtplib3>=0.0.1
