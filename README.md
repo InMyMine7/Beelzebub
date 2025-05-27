@@ -1,7 +1,7 @@
 # Beelzebub v1.6 Remaster
 
 <p align="center">
-  <img src="lib/img/beelz.png" alt="Beelzebub Logo" width="400"/>
+  <img src="lib/img/beelz.png" alt="Beelzebub Logo"/>
 </p>
 
 A comprehensive web security and penetration testing toolkit.
