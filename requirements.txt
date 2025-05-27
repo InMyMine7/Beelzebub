@@ -7,5 +7,5 @@ beautifulsoup4>=4.12.2
 colorama>=0.4.6
 tldextract>=5.1.1
 urllib3>=2.1.0
-paramiko>=3.3.1  
+asyncssh>=2.13.2
 smtplib3>=0.0.1
